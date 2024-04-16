@@ -2,6 +2,7 @@ import argparse
 import requests
 from collections import defaultdict
 from datetime import datetime, timedelta
+import discord
 
 this_week_sales = {'total': 0}
 total_sales = {'total': 0}
@@ -52,20 +53,6 @@ def get_attendees(event_id, token):
       page += 1
     else:
       break
-
-  print(this_week_sales)
-  print(total_sales)
-
-def main():
-  parser = argparse.ArgumentParser(description='Aggregate Eventbrite attendee data by promotional code')
-  parser.add_argument('event_id', help='ID of the Eventbrite event')
-  parser.add_argument('token', help='Eventbrite API token')
-  args = parser.parse_args()
-
-  get_attendees(args.event_id, args.token)
-
-
-#TODO: make sure it mails on error/or maybe pings on discord
-if __name__ == '__main__':
-  main()
+  
+  return (this_week_sales,total_sales)
 
