@@ -8,7 +8,7 @@ import sys
 from datetime import date
 
 # ID of channel to post to
-channel_id = 1167171723058225212
+channel_id = 1229467756852936714
 
 intents = discord.Intents.default()
 client = discord.Client(command_prefix="!", intents=intents)
