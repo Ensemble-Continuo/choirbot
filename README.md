@@ -1,0 +1,1 @@
+Reads eventbrite ticket sales data and prints it to the ticket sales discord channel
