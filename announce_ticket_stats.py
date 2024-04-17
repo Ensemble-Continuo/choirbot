@@ -19,6 +19,8 @@ def print_data():
   tstr = '\n🎉 Ticket sales leaderboard for ' + date.today().strftime('%B %d, %Y') + ' 🎉 \n\n'
   tstr += '```  Promo code          |  Total  |  7-day change  '
   tstr += '\n-------------------------------------------------'
+  num_with_promo = 0
+  num_with_promo_this_week = 0
   for key, value in sort_sales:
     if key == 'total':
       continue
@@ -26,17 +28,27 @@ def print_data():
     total_str = str(total_sales[key]).ljust(8)
     this_week_str = str(this_week_sales[key])
     tstr += '\n' + code_str + '| ' + total_str + '| ' + this_week_str
+
+    num_with_promo += total_sales[key]
+    num_with_promo_this_week += this_week_sales[key]
   tstr += '```'
+  tstr += '\nTotal tickets sold: ' + str(total_sales['total'])
+  tstr += '\nTickets sold with promo: ' + str(num_with_promo)
   return tstr
 
 @client.event
 async def on_ready():
   print("Logged in!")
-  await client.get_channel(channel_id).send(print_data())
   
-  # there's probably a more graceful way to disconnect 
-  sys.exit()
+  message = print_data()
+  print('---------------------------------------------------')
+  print(message)
+  print('---------------------------------------------------')
+  await client.get_channel(channel_id).send(message)
 
+  # Produces an ugly exception message because discord bots are meant to be run continuously
+  print('\n\n✨ you should ignore this error message ✨')
+  sys.exit()
 
 parser = argparse.ArgumentParser(description='Aggregate Eventbrite attendee data by promotional code')
 parser.add_argument('event_id', help='ID of the Eventbrite event')
