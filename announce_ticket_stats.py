@@ -29,11 +29,14 @@ def print_data():
     code_str = (key[:18] + '..') if len(key) > 18 else key
     code_str = code_str.ljust(20,' ')
     total_str = str(total_sales[key]).ljust(8)
-    this_week_str = str(this_week_sales[key])
-    tstr += '\n' + code_str + '| ' + total_str + '| ' + this_week_str
-
+    
     num_with_promo += total_sales[key]
-    num_with_promo_this_week += this_week_sales[key]
+    this_week_str = '0'
+    if key in this_week_sales:
+      num_with_promo_this_week += this_week_sales[key]
+      this_week_str = str(this_week_sales[key])
+    
+    tstr += '\n' + code_str + '| ' + total_str + '| ' + this_week_str
   tstr += '\n```'
   tstr += '\nTotal tickets sold: ' + str(total_sales['total'])
   tstr += '\nTickets sold with promo: ' + str(num_with_promo)
