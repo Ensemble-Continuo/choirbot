@@ -39,7 +39,6 @@ def print_data():
     tstr += '\n' + code_str + '| ' + total_str + '| ' + this_week_str
   tstr += '\n```'
   tstr += '\nTotal tickets sold: ' + str(total_sales['total'])
-  tstr += '\nTickets sold with promo: ' + str(num_with_promo)
   return tstr
 
 @client.event
