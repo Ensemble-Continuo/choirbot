@@ -4,8 +4,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 import discord
 
-this_week_sales = {'total': 0}
-total_sales = {'total': 0}
+sales = {'total': {'this_week': 0, 'all_time': 0}}
 
 def get_attendees(event_id, token):
   url = f"https://www.eventbriteapi.com/v3/events/{event_id}/attendees/"
@@ -39,18 +38,15 @@ def get_attendees(event_id, token):
       if order_date >= datetime.now() - timedelta(days=7):
         sold_this_week = True
       
-      total_sales['total'] += 1
-      if promo_code in total_sales:
-        total_sales[promo_code] += 1
+      sales['total']['all_time'] += 1
+      if promo_code in sales:
+        sales[promo_code]['all_time'] += 1
       else:
-        total_sales[promo_code] = 1
+        sales[promo_code] = {'all_time': 1, 'this_week': 0}
 
       if sold_this_week:
-         this_week_sales['total'] += 1
-         if promo_code in this_week_sales:
-           this_week_sales[promo_code] += 1
-         else:
-           this_week_sales[promo_code] = 1
+         sales['total']['this_week'] += 1
+         sales[promo_code]['this_week'] += 1
        
     
     if data["pagination"]["has_more_items"]:
@@ -58,5 +54,5 @@ def get_attendees(event_id, token):
     else:
       break
   
-  return (this_week_sales,total_sales)
+  return sales
 

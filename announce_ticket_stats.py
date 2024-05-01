@@ -14,31 +14,27 @@ intents = discord.Intents.default()
 client = discord.Client(command_prefix="!", intents=intents)
 
 def print_data():
-  sort_sales = sorted(total_sales.items(), key=lambda item: -1*item[1])
+  # Sort first by this week sales, then all time sales. (None) goes at the bottom of the list.
+  sort_sales = sorted(sales.items(), key=lambda item: -1*(1000*item[1]['this_week'] + item[1]['all_time'] + (-999999 if item[0] == "(None)" else 0)))
   
   tstr = ''
   tstr += '🎉 Ticket sales leaderboard for ' + date.today().strftime('%B %d, %Y') + ' 🎉 \n'
   tstr += '\n```'
   tstr += '\nPromo code          |  Total  |  7d change '
   tstr += '\n-------------------------------------------'
-  num_with_promo = 0
-  num_with_promo_this_week = 0
+
   for key, value in sort_sales:
     if key == 'total':
       continue
     code_str = (key[:18] + '..') if len(key) > 18 else key
     code_str = code_str.ljust(20,' ')
-    total_str = str(total_sales[key]).ljust(8)
+    total_str = str(sales[key]['all_time']).ljust(8)
     
-    num_with_promo += total_sales[key]
-    this_week_str = '0'
-    if key in this_week_sales:
-      num_with_promo_this_week += this_week_sales[key]
-      this_week_str = str(this_week_sales[key])
+    this_week_str = str(sales[key]['this_week'])
     
     tstr += '\n' + code_str + '| ' + total_str + '| ' + this_week_str
   tstr += '\n```'
-  tstr += '\nTotal tickets sold: ' + str(total_sales['total'])
+  tstr += '\nTotal tickets sold: ' + str(sales['total']['all_time'])
   return tstr
 
 @client.event
@@ -61,9 +57,8 @@ parser.add_argument('eventbrite_token', help='Eventbrite API token')
 parser.add_argument('discord_token', help='Discord API token')
 args = parser.parse_args()
 
-this_week_sales,total_sales = get_attendees(args.event_id, args.eventbrite_token)
+sales = get_attendees(args.event_id, args.eventbrite_token)
 
-print(this_week_sales)
-print(total_sales)
+print(sales)
 
 client.run(args.discord_token)
