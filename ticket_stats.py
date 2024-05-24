@@ -31,7 +31,6 @@ def get_attendees(event_id, token):
       sold_this_week = False
       promo_code = '(None)'
 
-      print(attendee["promotional_code"])
       if "promotional_code" in attendee and attendee["promotional_code"] is not None:
           promo_code = attendee["promotional_code"]["code"]
       order_date = datetime.strptime(attendee["created"], "%Y-%m-%dT%H:%M:%SZ")
