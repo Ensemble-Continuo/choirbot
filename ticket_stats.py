@@ -24,7 +24,7 @@ def get_attendees(event_id, token):
     response.raise_for_status()
     
     data = response.json()
-    
+    print(data)
     
     for attendee in data["attendees"]:
       promo_code = ''
@@ -33,6 +33,7 @@ def get_attendees(event_id, token):
 
       if "promotional_code" in attendee and attendee["promotional_code"] is not None:
           promo_code = attendee["promotional_code"]["code"]
+
       order_date = datetime.strptime(attendee["created"], "%Y-%m-%dT%H:%M:%SZ")
       if order_date >= datetime.now() - timedelta(days=7):
         sold_this_week = True

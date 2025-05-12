@@ -7,13 +7,17 @@ from ticket_stats import get_attendees
 import sys 
 from datetime import date
 
-# ID of channel to post to
-channel_id = 1229467756852936714 # test channel: 1167171723058225212
+custom_text = None
+channel_id = 0
+sales = {}
 
 intents = discord.Intents.default()
 client = discord.Client(command_prefix="!", intents=intents)
 
 def print_data():
+  sales = get_attendees(args.event_id, args.eventbrite_token)
+  print(sales)
+  
   # Sort first by this week sales, then all time sales. (None) goes at the bottom of the list.
   sort_sales = sorted(sales.items(), key=lambda item: -1*(1000*item[1]['this_week'] + item[1]['all_time'] + (-999999 if item[0] == "(None)" else 0)))
   
@@ -41,7 +45,12 @@ def print_data():
 async def on_ready():
   print("Logged in!")
   
-  message = print_data()
+  message=''
+  if custom_text:
+    message = custom_text
+  else:
+    message = print_data()
+
   print('')
   print(message)
   print('')
@@ -52,13 +61,13 @@ async def on_ready():
   sys.exit()
 
 parser = argparse.ArgumentParser(description='Aggregate Eventbrite attendee data by promotional code')
-parser.add_argument('event_id', help='ID of the Eventbrite event')
-parser.add_argument('eventbrite_token', help='Eventbrite API token')
-parser.add_argument('discord_token', help='Discord API token')
+parser.add_argument('--event_id', help='ID of the Eventbrite event')
+parser.add_argument('--eventbrite_token', help='Eventbrite API token')
+parser.add_argument('--discord_token', help='Discord API token')
+parser.add_argument('--discord_channel_id', help='Discord channel ID (from URL)')
+parser.add_argument('--custom_text', help='Custom text to send (optional)')
 args = parser.parse_args()
 
-sales = get_attendees(args.event_id, args.eventbrite_token)
-
-print(sales)
-
+channel_id = int(args.discord_channel_id)
+custom_text = args.custom_text
 client.run(args.discord_token)
